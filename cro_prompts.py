@@ -179,7 +179,8 @@ Rules:
 - engagement_events must include at least faq_opened and time_on_page_60s
 - retargeting_cohorts must have 4 items: Tier 1, Tier 2, Tier 3, and Exclude
 - Be specific to THIS page and THIS audience - no generic CRO advice
-- Return only the JSON object"""
+- CRITICAL JSON RULES: Use only straight double quotes. Never use smart/curly quotes. Never use apostrophes in values — write "doesn't" as "does not". Escape any special characters. No trailing commas. No comments inside JSON.
+- Return ONLY the raw JSON object. No markdown, no code fences, no explanation before or after."""
 
     return prompt
 

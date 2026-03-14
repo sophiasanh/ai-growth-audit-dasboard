@@ -1,6 +1,7 @@
 import streamlit as st
 import anthropic
 import json
+import re
 import os
 from cro_scraper import scrape_landing_page, format_for_prompt
 from cro_prompts import CRO_SYSTEM_PROMPT, build_cro_prompt, build_copy_deep_dive_prompt
@@ -236,12 +237,23 @@ if run:
     with st.spinner("Running CRO analysis via Claude API..."):
         try:
             resp = client.messages.create(
-                model="claude-sonnet-4-6",
+                model="claude-sonnet-4-20250514",
                 max_tokens=4096,
                 system=CRO_SYSTEM_PROMPT,
                 messages=[{"role": "user", "content": cro_prompt}],
             )
-            raw = resp.content[0].text.strip().replace("```json", "").replace("```", "").strip()
+            raw = resp.content[0].text.strip()
+            # Strip code fences
+            raw = re.sub(r'^```[a-z]*\n?', '', raw, flags=re.MULTILINE)
+            raw = raw.replace('```', '').strip()
+            # Find the outermost JSON object
+            start = raw.find('{')
+            end = raw.rfind('}') + 1
+            if start != -1 and end > start:
+                raw = raw[start:end]
+            # Replace smart quotes with straight quotes
+            raw = raw.replace('\u2018', "'").replace('\u2019', "'")
+            raw = raw.replace('\u201c', '"').replace('\u201d', '"')
             cro_result = json.loads(raw)
         except Exception as e:
             st.error(f"CRO analysis failed: {e}")
@@ -249,7 +261,7 @@ if run:
     with st.spinner("Running copy deep-dive via Claude API..."):
         try:
             resp2 = client.messages.create(
-                model="claude-sonnet-4-6",
+                model="claude-sonnet-4-20250514",
                 max_tokens=4096,
                 system=CRO_SYSTEM_PROMPT,
                 messages=[{"role": "user", "content": copy_prompt}],
