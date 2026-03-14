@@ -238,7 +238,7 @@ if run:
         try:
             resp = client.messages.create(
                 model="claude-sonnet-4-20250514",
-                max_tokens=4096,
+                max_tokens=8192,
                 system=CRO_SYSTEM_PROMPT,
                 messages=[{"role": "user", "content": cro_prompt}],
             )
@@ -262,11 +262,19 @@ if run:
         try:
             resp2 = client.messages.create(
                 model="claude-sonnet-4-20250514",
-                max_tokens=4096,
+                max_tokens=8192,
                 system=CRO_SYSTEM_PROMPT,
                 messages=[{"role": "user", "content": copy_prompt}],
             )
-            raw2 = resp2.content[0].text.strip().replace("```json", "").replace("```", "").strip()
+            raw2 = resp2.content[0].text.strip()
+            raw2 = re.sub(r'^```[a-z]*\n?', '', raw2, flags=re.MULTILINE)
+            raw2 = raw2.replace('```', '').strip()
+            start2 = raw2.find('{')
+            end2 = raw2.rfind('}') + 1
+            if start2 != -1 and end2 > start2:
+                raw2 = raw2[start2:end2]
+            raw2 = raw2.replace('\u2018', "'").replace('\u2019', "'")
+            raw2 = raw2.replace('\u201c', '"').replace('\u201d', '"')
             copy_result = json.loads(raw2)
         except Exception as e:
             st.warning(f"Copy deep-dive failed: {e}")

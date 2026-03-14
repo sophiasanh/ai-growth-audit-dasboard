@@ -171,13 +171,14 @@ Return a JSON object with EXACTLY this structure:
 }}
 
 Rules:
-- cro_tests must have 5-7 items, ordered P1 first
-- copywriting_rewrites must have 4-6 items including at least one full hero section rewrite
-- video_events must include video_hero_play and video_hero_complete at minimum
-- cta_events must cover all CTA positions on the page
-- scroll_events must cover all four depths: 25, 50, 75, 90
-- engagement_events must include at least faq_opened and time_on_page_60s
-- retargeting_cohorts must have 4 items: Tier 1, Tier 2, Tier 3, and Exclude
+- cro_tests must have exactly 5 items, ordered P1 first
+- copywriting_rewrites must have exactly 4 items including one hero section rewrite
+- video_events must have exactly 4 items including video_hero_play and video_hero_complete
+- cta_events must have exactly 3 items
+- scroll_events must have exactly 4 items one per depth: 25, 50, 75, 90
+- engagement_events must have exactly 3 items
+- retargeting_cohorts must have exactly 4 items: Tier 1, Tier 2, Tier 3, Exclude
+- Keep all string values SHORT - under 30 words each. No long paragraphs in JSON values.
 - Be specific to THIS page and THIS audience - no generic CRO advice
 - CRITICAL JSON RULES: Use only straight double quotes. Never use smart/curly quotes. Never use apostrophes in values — write "doesn't" as "does not". Escape any special characters. No trailing commas. No comments inside JSON.
 - Return ONLY the raw JSON object. No markdown, no code fences, no explanation before or after."""
